@@ -181,8 +181,18 @@ func compose(middlewares []middleware, endpoint handler) handler {
 	return h
 }
 
+// TODO: what's the info?
+func withPrint(info string) middleware {
+	return func(next handler) handler {
+		return func(ctx *context.DNSContext, r *D.Msg) (*D.Msg, error) {
+			log.Infoln("[%s], DNS Context: [%#v], D.Msg[%#v]", info, ctx, r)
+			return next(ctx, r)
+		}
+	}
+}
+
 func newHandler(resolver *Resolver, mapper *ResolverEnhancer) handler {
-	middlewares := []middleware{}
+	middlewares := []middleware{withPrint("MY DNS TRACER")}
 
 	if resolver.hosts != nil {
 		middlewares = append(middlewares, withHosts(resolver.hosts))

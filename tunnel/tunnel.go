@@ -389,6 +389,7 @@ func match(metadata *C.Metadata) (C.Proxy, C.Rule, error) {
 
 	for _, rule := range rules {
 		if !resolved && shouldResolveIP(rule, metadata) {
+			log.Warnln("trying to resolve %v in %v", metadata.String(), rule.RuleType())
 			ip, err := resolver.ResolveIP(metadata.Host)
 			if err != nil {
 				log.Debugln("[DNS] resolve %s error: %s", metadata.Host, err.Error())
