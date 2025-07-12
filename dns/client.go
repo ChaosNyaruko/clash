@@ -10,6 +10,7 @@ import (
 
 	"github.com/Dreamacro/clash/component/dialer"
 	"github.com/Dreamacro/clash/component/resolver"
+	"github.com/Dreamacro/clash/log"
 
 	D "github.com/miekg/dns"
 )
@@ -32,11 +33,13 @@ func (c *client) ExchangeContext(ctx context.Context, m *D.Msg) (*D.Msg, error) 
 		err error
 	)
 	if c.r == nil {
+		log.Infoln("[DNS] c.r == nil ExchangeContext, Msg: %#v", m)
 		// a default ip dns
 		if ip = net.ParseIP(c.host); ip == nil {
 			return nil, fmt.Errorf("dns %s not a valid ip", c.host)
 		}
 	} else {
+		log.Warnln("[DNS] c.r != nil ExchangeContext, Msg: %#v", m)
 		ips, err := resolver.LookupIPWithResolver(ctx, c.host, c.r)
 		if err != nil {
 			return nil, fmt.Errorf("use default dns resolve failed: %w", err)
